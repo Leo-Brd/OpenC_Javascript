@@ -18,13 +18,10 @@ function afficherResultat(score, nbMotsProposes) {
     spanScore.innerText = affichageScore
 }
 
-let inputEcriture = document.getElementById("inputEcriture")
-let validateButton = document.getElementById("btnValiderMot")
-validateButton.addEventListener("click", (event) => {
-    console.log(inputEcriture.value)
-})
-
-
+function afficherProposition(mot){
+    let zoneProposition = document.querySelector(".zoneProposition")
+    zoneProposition.textContent = mot
+}
 
 
 
@@ -37,7 +34,22 @@ function lancerJeu() {
     let score = 0
     let nbMotsProposes = 0
 
+    let i = 0
+    afficherProposition(listeMots[i])
 
+    let inputEcriture = document.getElementById("inputEcriture")
+    let validateButton = document.getElementById("btnValiderMot")
+    validateButton.addEventListener("click", () => {
+        console.log(inputEcriture.value)
+        inputEcriture.value = ""
+        i ++
+        if (listeMots[i] === undefined){
+            validateButton.disabled = true
+            afficherProposition("Le jeu est fini")
+            return;
+        }
+        afficherProposition(listeMots[i])
+    })
 
     afficherResultat(score, nbMotsProposes)
 }
