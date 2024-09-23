@@ -32,7 +32,6 @@ function afficherProposition(mot){
 function lancerJeu() {
     // Initialisations
     let score = 0
-    let nbMotsProposes = 0
 
     let i = 0
     afficherProposition(listeMots[i])
@@ -41,8 +40,12 @@ function lancerJeu() {
     let validateButton = document.getElementById("btnValiderMot")
     validateButton.addEventListener("click", () => {
         console.log(inputEcriture.value)
+        if (inputEcriture.value === listeMots[i]){
+            score ++
+        }
         inputEcriture.value = ""
         i ++
+        afficherResultat(score, i)
         if (listeMots[i] === undefined){
             validateButton.disabled = true
             afficherProposition("Le jeu est fini")
@@ -51,5 +54,5 @@ function lancerJeu() {
         afficherProposition(listeMots[i])
     })
 
-    afficherResultat(score, nbMotsProposes)
+    afficherResultat(score, i)
 }
