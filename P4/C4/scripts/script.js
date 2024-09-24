@@ -43,33 +43,40 @@ function afficherEmail(nom, email, score) {
  * Cette fonction prend un nom en paramètre et valide qu'il est au bon format
  * ici : deux caractères au minimum
  * @param {string} nom 
- * @return {boolean}
+ * @throws {Error}
  */
 function validerNom(nom) {
-    if (nom.length >= 2) {
-        return true
+    if (nom.length < 2) {
+        throw new Error("Le nom est trop court")
     }
-    return false
 }
 
 /**
  * Cette fonction prend un email en paramètre et valide qu'il est au bon format. 
  * @param {string} email 
- * @return {boolean}
+ * @throws {Error}
  */
 function validerEmail(email) {
     let emailRegExp = new RegExp("[a-z0-9._-]+@[a-z0-9._-]+\\.[a-z0-9._-]+")
-    if (emailRegExp.test(email)) {
-        return true
+    if (emailRegExp.test(email) === false) {
+        throw new Error("L'email n'est pas valide")
     }
-    return false
 }
 
-function gererFormulaire(score) {
-    // Gestion de l'événement submit sur le formulaire de partage. 
-    let form = document.querySelector("form")
-    form.addEventListener("submit", (event) => {
-        event.preventDefault()
+function afficherMessageErreur(message) {
+    let span = document.getElementById("erreurMessage")
+
+    if (!span) {
+        let popup = document.querySelector(".popup")
+        span = document.createElement("span")
+        span.id = "erreurMessage"
+        popup.appendChild(span)
+    }
+    span.innerText = message
+}
+
+function gererFormulaire(scoreEmail) {
+    try {
 
         let baliseNom = document.getElementById("nom")
         let nom = baliseNom.value
@@ -77,14 +84,17 @@ function gererFormulaire(score) {
         let baliseEmail = document.getElementById("email")
         let email = baliseEmail.value
 
-        if (validerNom(nom) && validerEmail(email)) {
-            let scoreEmail = `${score} / ${i}`
-            afficherEmail(nom, email, scoreEmail)
-        } else {
-            console.log("Erreur")
-        }
-        
-    })
+        validerNom(nom)
+        validerEmail(email)
+
+        afficherEmail(nom, email, scoreEmail)
+
+        afficherMessageErreur("")
+            
+    } catch(error) {
+        afficherMessageErreur(error.message)
+    }
+    
 }
 
 
@@ -137,7 +147,13 @@ function lancerJeu() {
         })
     }
 
-    gererFormulaire(score)
+    let scoreEmail = `${score} / ${i}`
+    let form = document.querySelector("form")
+    form.addEventListener("submit", (event) => {
+        event.preventDefault()
+        gererFormulaire(scoreEmail)
+    })
+
 
     afficherResultat(score, i)
 }
